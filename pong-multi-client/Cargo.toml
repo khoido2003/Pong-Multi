@@ -1,0 +1,8 @@
+[package]
+name = "pong-multi-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.15.1"
+bevy_dev_tools = "0.15.1"
