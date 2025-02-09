@@ -1,4 +1,8 @@
-use bevy::{prelude::*, text::FontSmoothing};
+use bevy::{
+    prelude::*,
+    text::FontSmoothing,
+    window::{PresentMode, WindowMode},
+};
 use bevy_dev_tools::fps_overlay::{FpsOverlayConfig, FpsOverlayPlugin};
 
 use game::world::WorldPlugin;
@@ -18,7 +22,24 @@ fn main() {
     app
         // Defaul plugins
         .add_plugins((
-            DefaultPlugins,
+            DefaultPlugins.set(WindowPlugin {
+                primary_window: Some(Window {
+                    //mode: WindowMode::Fullscreen(MonitorSelection::Primary),
+                    mode: WindowMode::Windowed,
+                    title: "Pong the Game".into(),
+                    name: Some("bevy.app".into()),
+                    present_mode: PresentMode::AutoVsync,
+                    fit_canvas_to_parent: true,
+                    prevent_default_event_handling: false,
+                    enabled_buttons: bevy::window::EnabledButtons {
+                        ..Default::default()
+                    },
+                    visible: true,
+                    ..default()
+                }),
+
+                ..Default::default()
+            }),
             FpsOverlayPlugin {
                 config: FpsOverlayConfig {
                     text_config: TextFont {
