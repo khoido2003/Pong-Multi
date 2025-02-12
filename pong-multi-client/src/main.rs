@@ -5,7 +5,8 @@ use bevy::{
 };
 use bevy_dev_tools::fps_overlay::{FpsOverlayConfig, FpsOverlayPlugin};
 
-use game::world::WorldPlugin;
+use game::{player::PlayerPlugin, world::WorldPlugin};
+use user_interface::welcome::WelcomePlugin;
 
 pub mod game;
 pub mod user_interface;
@@ -16,9 +17,23 @@ impl OverlayColor {
     const GREEN: Color = Color::srgb(0.0, 1.0, 0.0);
 }
 
+#[derive(States, Clone, Debug, Copy, PartialEq, Eq, Hash, Default)]
+pub enum AppState {
+    #[default]
+    Welcome,
+    Lobby,
+    Matching,
+    InGame,
+}
+
+#[derive(Resource)]
+pub struct PlayerData {
+    pub name: String,
+    pub connected: bool,
+}
+
 fn main() {
     let mut app = App::new();
-
     app
         // Defaul plugins
         .add_plugins((
@@ -43,7 +58,7 @@ fn main() {
             FpsOverlayPlugin {
                 config: FpsOverlayConfig {
                     text_config: TextFont {
-                        font_size: 42.0,
+                        font_size: 20.0,
                         font: default(),
                         font_smoothing: FontSmoothing::default(),
                         ..default()
@@ -54,7 +69,14 @@ fn main() {
                 },
             },
         ))
+        // Game resources
+        .insert_resource(PlayerData {
+            name: String::new(),
+            connected: false,
+        })
+        // UI plugins
+        .add_plugins((WelcomePlugin))
         // Game plugins
-        .add_plugins(WorldPlugin)
+        .add_plugins((WorldPlugin, PlayerPlugin))
         .run();
 }
